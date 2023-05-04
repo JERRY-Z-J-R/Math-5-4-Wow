@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>汽车生命周期能耗和排放评价</title>
+        <link
+            rel="shortcut icon"
+            href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAA1lJREFUWEfVl0toE2EQx/+zFVv1IupB9CKiInjxrVBQC2bX0kP1ULsb8VIPgqJHFbPBhGx8HTz4RtCDaHatB0Wlmo1iD2KpD1SwireCoggeREQEkx3ZPLZps68sQvE7hXzzn/l9s7Mz3xImedEkx8f/AZAsyH2WRe1EWBgqY8zvScCLTMy4EmQfmIGkqfQz0BPkyG2fgJsZUd/up/UFSOSVy0ToixK8pmHGlayk7/Ly4Qlw+IHcJQh0zxESvsHic6FgiPYBmDVmS12amBvwyJK7S9WUrwK00zmJReuyW3LPwgAkHsXXUomHHS3xpWzM2B0aQDXji0H8FIw5toiBQlbURfW+vCkMgNZpDKqm/ASg9qr912KJ1x/vNEYn6l0fQcJUDhBwwjFma48m3bigmspbAMsCIF5qor46WVAOMeNYzZYYezOSfj4UQNJUTAZiNWNLwNypEGYXLWskTAZQtBZxa+tvKv35VGc/oIl6ly+AmpdTINoIYCzVjNuapG9T88ppEOziCl7EKS1mpFUzngdYrCvkIVhsapKRcjJT+6EWlFtgbG0gJPRmYnq/aiqPgyOPWWii3pHMx2Um1ht0RM+tVqH76IZrX8o1UD35EdcAJe6wi6qZ4DXbhBnvIXC/q5Y5bWeiAlCIPwPzGp8gkQDGPcpG5680UV9ZATCVnwBmRDlldA390sTcjBoAuzli0EWGNUygIwQsaDoYc5qJphFwwE2riTp5AzDOaJK+3xamHvYuKVrCh2YAGLQ9K+Zu+ul9AezN+oDVtyBUJ7R1YfQBGahUqe0smY+vYuIXUTNQbuEt1PAa+wNUog0S4TVzuTEtbwaAgM8AXjLhBxid46djxVMdwISO1UykqLaMD5qkL632ASUBhhbVVxQdgc9mRGNf9S3YIQLWDQAzoziLoBlh5s6sZHx0Kj1xt2c+tU056zYPIgTwlNj3xBZBSKU2X39nGzXcB5KF+G1m7vb0wJwetyfY95W6xeRMuok+GDiYFfWT9f83ApjKCfboXLbQamuZZ08xN0Df4VMWcLcmGnd8AexN1VS8WrPT3bwy5NWwvK7onrdiNS+fAtGKMjdoVGAMZaTcpTD1UB3v9nSdDsJ3WPym/hISmIEwQf6VTeCX0b8K5OVn0gH+AlasUjCxwi+5AAAAAElFTkSuQmCC"
+        />
+        <style>
+            #app {
+                display: flex;
+                padding: 2rem 6rem;
+            }
+
+            .step {
+                flex: 1;
+                width: 100px;
+                padding-right: 2rem;
+            }
+
+            .main {
+                flex: 4;
+            }
+
+            .content {
+                font-size: 2.4rem;
+            }
+
+            .content span {
+                display: inline-block;
+            }
+
+            .text span {
+                display: inline-block;
+            }
+
+            .emo:hover {
+                color: #66179f;
+                cursor: pointer;
+            }
+
+            .wow {
+                color: #66179f;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app" v-loading="loading">
+            <div class="step" style="height: 73vh">
+                <el-steps :active="active" finish-status="success" direction="vertical">
+                    <el-step title="步骤 1"></el-step>
+                    <el-step title="步骤 2"></el-step>
+                    <el-step title="步骤 3"></el-step>
+                    <el-step title="步骤 4"></el-step>
+                </el-steps>
+                <el-button style="margin-top: 2rem" @click="next" type="success">下一步</el-button>
+            </div>
+
+            <div class="main" v-show="now[0]">
+                <div class="header">
+                    <h1>WTT 阶段能耗评价</h1>
+                    <h3>[1] 燃料生产阶段能耗评价</h3>
+                </div>
+                <div class="content">
+                    <span>$$E_{WTT1}$$</span><span style="font-size: 1rem">{{`（${EWTT1}）`}}</span>
+                    <span>$$=$$</span>
+                    <span class="emo" @click="input1">$$E_f$$</span><span style="font-size: 1rem">{{`（${Ef}）`}}</span>
+                    <span>$$+$$</span>
+                    <span class="emo" @click="input2">$$E_p$$</span><span style="font-size: 1rem">{{`（${Ep}）`}}</span>
+                </div>
+                <div class="about">【注 释】</div>
+                <div class="text">
+                    <span class="wow">$$E_{WTT1}=E_f+E_p$$</span> ：<span>$$E_f$$</span> 为煤、原油、天然气、柴油等能源产品生产过程中直接转化为产品的原料（天然气、原油）中包含的能量；<span>$$E_p$$</span> 为能源产品生产过程能源消耗。<br />
+                    <span class="wow">$$E_p=E_{p1}$$</span> ：<span>$$E_{pi}$$</span> 为能源产品生产过程 <span>$$i$$</span> 阶段过程能源消耗，指煤、天然气、柴油等能源生产过程中所消耗的过程能源（如电、燃料油等）的总和，所有的过程能源消耗都计算到一次能源水平。<br />
+                    <span class="wow">$$E_{pi}=E_{pri}+E_{tri}$$</span> ：<span>$$E_{pri}$$</span> 为能源产品生产过程 <span>$$i$$</span> 阶段产生的过程能源消耗；<span>$$E_{tri}$$</span> 为能源产品生产过程 <span>$$i$$</span> 阶段运输过程产生的能源消耗。<br />
+                    <span class="wow">$$E_{pri}=ΣE_{pi}Λ_{ij}(1+E_{pij})$$</span> ：<span>$$E_{pi}$$</span> 能源生产过程 <span>$$i$$</span> 阶段过程能源消耗量；<span>$$Λ_{ij}$$</span> 为能源生产过程 <span>$$i$$</span> 阶段第 <span>$$j$$</span> 类能源的消耗比例；<span>$$E_{pij}$$</span> 为能源生产过程 <span>$$i$$</span> 阶段消耗的第 <span>$$j$$</span> 类能源生产过程带入的过程能源消耗。
+                </div>
+            </div>
+
+            <div class="main" v-show="now[1]">
+                <div class="header">
+                    <h1>WTT 阶段能耗评价</h1>
+                    <h3>[2] 燃料运输阶段能耗评价</h3>
+                </div>
+                <div class="content"><span class="emo" @click="input3" title="点击上传 Excel 文件（列1:Ei - 列2:ηi）">$$E_{WTT2}=E_1η_1+E_2η_2+E_3η_3+···+E_iη_i$$</span><span style="font-size: 1rem">{{`（${EWTT2}）`}}</span></div>
+                <div class="about">【注 释】</div>
+                <div class="text">
+                    <span class="wow">$$η_i=H/E_i$$</span> ：整体能源效率<span>$$η_i$$</span> 是能源产品热值与其生产过程整体能源消耗的比值。<br />
+                    <span class="wow">$$E_i=1/η_i$$</span> ：对于生产阶段，GREET 以某阶段产出 1 百万 Btu 热值为基准，计算某阶段能耗。每产出单位能量输出所需要的能量输入用能量效率来计算。<br />
+                    <span class="wow">$$E_{WTT2}=E_1η_1+E_2η_2+E_3η_3+···+E_iη_i$$</span> ：首先，根据运输距离、燃料结构和能耗强度计算出某种运输方式的能源消耗，然后根据燃料的运输方式的比例，计算出燃料在运输阶段的能耗 <span>$$E_{WTT2}$$</span>。 <br />
+                    <span class="wow">$$E_i$$</span> ：为各种运输方式的能源消耗。<br />
+                    <span class="wow">$$η_i$$</span> ：为各种运输方式所占的比例。<br />
+                </div>
+            </div>
+
+            <div class="main" v-show="now[2]">
+                <div class="header">
+                    <h1>TTW 阶段能耗评价</h1>
+                </div>
+                <div class="content">
+                    <span>$$E_{TTW}$$</span><span style="font-size: 1rem">{{`（${ETTW}）`}}</span>
+                    <span>$$=$$</span>
+                    <span class="emo" @click="input4">$$b$$</span><span style="font-size: 1rem">{{`（${b}）`}}</span>
+                    <span>$$×$$</span>
+                    <span class="emo" @click="input5">$$q$$</span><span style="font-size: 1rem">{{`（${q}）`}}</span>
+                    <span>$$×$$</span>
+                    <span class="emo" @click="input6">$$p$$</span><span style="font-size: 1rem">{{`（${p}）`}}</span>
+                </div>
+                <div class="about">【注 释】</div>
+                <div class="text"><span>$$TTW$$</span> 阶段的能耗主要考虑车辆行驶的能耗。利用车辆的燃油经济性指标 <span>$$b$$</span> 和燃油热值 <span>$$q$$</span> 及密度 <span>$$p$$</span> 可得到。</div>
+            </div>
+
+            <div class="main" v-show="now[3]">
+                <div class="header">
+                    <h1>WTW 阶段能耗评价</h1>
+                </div>
+                <div class="content">
+                    <span>$$E_{WTW}$$</span><span style="font-size: 1rem">{{`（${EWTW}）`}}</span>
+                    <span>$$=$$</span>
+                    <span>$$E_{TTW}×(1+E_{WTT})$$</span>
+                </div>
+                <div class="about">【注 释】</div>
+                <div class="text">
+                    <span class="wow">$$E_{WTW}$$</span> ：<span>$$WTW$$</span> 过程总能耗。<br />
+                    <span class="wow">$$E_{TTW}$$</span> ：<span>$$TTW$$</span> 过程能耗。<br />
+                    <span class="wow">$$E_{WTT}$$</span> ：<span>$$WTT$$</span> 过程能耗。<br />
+                </div>
+            </div>
+
+            <div class="main" v-show="now[4]">
+                <div class="header">
+                    <h1 style="font-size: 5.4rem"><i class="el-icon-trophy" style="padding-right: 2.4rem"></i>over! ^^</h1>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.3/dist/xlsx.full.min.js"></script>
+
+        <script>
+            new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        loading: true,
+                        active: 0,
+                        now: [true, true, true, true, true],
+                        Ef: 0,
+                        Ep: 0,
+                        EWTT2: 0,
+                        b: 0,
+                        q: 0,
+                        p: 0
+                    };
+                },
+                computed: {
+                    EWTT1() {
+                        return this.Ef + this.Ep;
+                    },
+                    ETTW() {
+                        return this.b * this.q * this.p;
+                    },
+                    EWTW() {
+                        return this.ETTW * (1 + this.EWTT1 + this.EWTT2);
+                    }
+                },
+                methods: {
+                    next() {
+                        this.active++;
+                        if (this.active > 4) {
+                            this.active = 0;
+                        }
+                        for (let i = 0; i < this.now.length; i++) {
+                            if (i === this.active) {
+                                this.now[i] = true;
+                            } else {
+                                this.now[i] = false;
+                            }
+                        }
+                    },
+                    input1() {
+                        this.$prompt('请输入 Ef', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消'
+                        }).then(({ value }) => {
+                            this.Ef = Number(value);
+                            this.$message({
+                                type: 'success',
+                                message: 'Ef 的值是：' + value
+                            });
+                        });
+                    },
+                    input2() {
+                        this.$prompt('请输入 Ep', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消'
+                        }).then(({ value }) => {
+                            this.Ep = Number(value);
+                            this.$message({
+                                type: 'success',
+                                message: 'Ep 的值是：' + value
+                            });
+                        });
+                    },
+                    input3() {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.addEventListener('change', event => {
+                            const file = event.target.files[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = event => {
+                                const data = event.target.result;
+                                const workbook = XLSX.read(data, { type: 'binary' });
+                                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                                const range = XLSX.utils.decode_range(sheet['!ref']);
+                                const rows = [];
+                                for (let r = range.s.r; r <= range.e.r; ++r) {
+                                    const row = [];
+                                    for (let c = range.s.c; c <= range.e.c; ++c) {
+                                        const cell_address = { c: c, r: r };
+                                        const cell_ref = XLSX.utils.encode_cell(cell_address);
+                                        const cell = sheet[cell_ref];
+                                        row.push(cell ? Number(cell.v) : '');
+                                    }
+                                    rows.push(row);
+                                }
+                                const results = rows.map(row => row.reduce((a, b) => a * b)).reduce((a, b) => a + b);
+                                this.$message({
+                                    type: 'success',
+                                    message: 'Excel 文件上传成功！解析计算结果为：' + results
+                                });
+                                this.EWTT2 = results;
+                            };
+                            reader.readAsBinaryString(file);
+                        });
+                        input.click();
+                    },
+                    input4() {
+                        this.$prompt('请输入 b', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消'
+                        }).then(({ value }) => {
+                            this.b = Number(value);
+                            this.$message({
+                                type: 'success',
+                                message: 'b 的值是：' + value
+                            });
+                        });
+                    },
+                    input5() {
+                        this.$prompt('请输入 q', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消'
+                        }).then(({ value }) => {
+                            this.q = Number(value);
+                            this.$message({
+                                type: 'success',
+                                message: 'q 的值是：' + value
+                            });
+                        });
+                    },
+                    input6() {
+                        this.$prompt('请输入 p', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消'
+                        }).then(({ value }) => {
+                            this.p = Number(value);
+                            this.$message({
+                                type: 'success',
+                                message: 'p 的值是：' + value
+                            });
+                        });
+                    }
+                },
+                mounted() {
+                    console.log('Made by Jerry Zhou 2023/5/5 03:42 ^^');
+                    setTimeout(() => {
+                        this.now = [true, false, false, false, false];
+                        this.loading = false;
+                    }, 1000);
+                }
+            });
+        </script>
+    </body>
+</html>
